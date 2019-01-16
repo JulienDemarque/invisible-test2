@@ -8,7 +8,6 @@ const INITIAL_STATE = {
 // need a reducer since we are populating the server... maybe just for
 // confirmation or for display error
 export default function(state = INITIAL_STATE, action) {
-  console.log(action);
   switch (action.type) {
     case API_CALL:
       return { ...state, ...action.payload };

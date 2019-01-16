@@ -9,8 +9,8 @@ import ListItems from "./ListItems";
 
 class App extends Component {
   componentDidMount() {
-    console.log("this.props.callAPI", this.props.callAPI);
-    this.props.callAPI();
+    const query = { searchTerm: "javascript", sort: "price_asc" };
+    this.props.callAPI(query);
   }
 
   render() {
@@ -24,8 +24,8 @@ class App extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  callAPI: () => {
-    dispatch(callAPI());
+  callAPI: props => {
+    dispatch(callAPI(props));
   }
 });
 
