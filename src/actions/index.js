@@ -9,7 +9,7 @@ export const callAPI = query => async dispatch => {
   var response = await fetch(
     `https://api.mercadolibre.com/sites/MLM/search?q=${query.searchTerm}&sort=${
       query.sort
-    }&offset=0`
+    }&offset=${(query.page - 1) * 50}`
   );
   let body = await response.json();
   console.log(body);

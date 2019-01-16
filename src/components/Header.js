@@ -2,40 +2,17 @@ import React, { Component } from "react";
 import { Field, reduxForm } from "redux-form";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { updateSearchTerm, callAPI } from "../actions";
 
 class Header extends Component {
   constructor(props) {
     super(props);
-    this.state = { isActive: false, selectValue: "price_asc" };
+    this.state = { isActive: false };
   }
 
   handleSubmit = formProps => {
-    // We could go and take the searchInput from the redux state as an alternative
-    // const query = {
-    //   searchTerm: formProps.searchInput,
-    //   sort: this.state.selectValue
-    // };
-    this.callAPI();
-  };
-
-  handleSelectChange = e => {
-    this.setState({ selectValue: e.target.value }, () => {
-      this.callAPI();
+    this.props.resetPagination(() => {
+      this.props.callAPI();
     });
-  };
-
-  callAPI = () => {
-    console.log("this.props.formData", this.props.formData);
-    const { searchItem } = this.props.formData;
-    const searchTerm = searchItem.values
-      ? searchItem.values.searchInput
-      : "javascript";
-    const query = {
-      searchTerm: searchTerm,
-      sort: this.state.selectValue
-    };
-    this.props.callAPI(query);
   };
 
   handleCloseOpenMenu = () => {
@@ -44,7 +21,26 @@ class Header extends Component {
 
   render() {
     console.log("apiCallData", this.props.apiCallData);
-    const { apiCallData, handleSubmit } = this.props;
+    //We might need apiCallData later...
+    const {
+      apiCallData,
+      handleSubmit,
+      selectValue,
+      handleSelectChange,
+      handleNextPage,
+      handlePreviousPage
+    } = this.props;
+
+    let hasMorePage = true;
+    let hasPreviousPage = false;
+    let totalPage = 0;
+    if (apiCallData.paging) {
+      hasMorePage = apiCallData.paging.total > apiCallData.paging.offset + 50;
+      hasPreviousPage = apiCallData.paging.offset !== 0;
+      console.log(apiCallData.paging.total);
+      totalPage = Math.floor(apiCallData.paging.total / 50) + 1;
+    }
+
     return (
       <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
@@ -91,11 +87,27 @@ class Header extends Component {
         >
           <div className="navbar-end">
             <div className="navbar-item">
+              {hasPreviousPage && (
+                <button className="button" onClick={handlePreviousPage}>
+                  Previous page
+                </button>
+              )}
+            </div>
+            <div className="navbar-item">
+              {hasMorePage && (
+                <button className="button is-primary" onClick={handleNextPage}>
+                  Next page
+                </button>
+              )}
+            </div>
+            <div className="navbar-item">
+              <div>
+                Page: {this.props.page}/{totalPage}
+              </div>
+            </div>
+            <div className="navbar-item">
               <div className="select is-primary">
-                <select
-                  value={this.state.selectValue}
-                  onChange={this.handleSelectChange}
-                >
+                <select value={selectValue} onChange={handleSelectChange}>
                   <option value="price_asc">Price Ascending</option>
                   <option value="price_desc">Price Descending</option>
                 </select>
@@ -110,21 +122,14 @@ class Header extends Component {
 
 function mapStateToProps(state) {
   return {
-    apiCallData: state.apiCall,
-    formData: state.form
+    apiCallData: state.apiCall
   };
 }
-
-const mapDispatchToProps = dispatch => ({
-  callAPI: props => {
-    dispatch(callAPI(props));
-  }
-});
 
 export default compose(
   connect(
     mapStateToProps,
-    mapDispatchToProps
+    null
   ),
   reduxForm({ form: "searchItem" })
 )(Header);

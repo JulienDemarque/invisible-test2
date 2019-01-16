@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { connect } from "react-redux";
 
 import Item from "./Item";
