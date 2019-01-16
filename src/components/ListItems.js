@@ -1,29 +1,32 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+
+import Item from "./Item";
 
 class ListItems extends Component {
   render() {
+    console.log("apiCallData", this.props.apiCallData);
+    const { apiCallData } = this.props;
     return (
       <div className="section">
         <div className="columns is-multiline">
-          <div className="column is-one-quarter">
-            <div className="box">is-one-quarter</div>
-          </div>
-          <div className="column is-one-quarter">
-            <div className="box">is-one-quarter</div>
-          </div>
-          <div className="column is-one-quarter">
-            <div className="box">is-one-quarter</div>
-          </div>
-          <div className="column is-one-quarter">
-            <div className="box">is-one-quarter</div>
-          </div>
-          <div className="column is-one-quarter">
-            <div className="box">is-one-quarter</div>
-          </div>
+          {apiCallData.results &&
+            apiCallData.results.map(result => (
+              <Item key={result.id} data={result} />
+            ))}
         </div>
       </div>
     );
   }
 }
 
-export default ListItems;
+function mapStateToProps(state) {
+  return {
+    apiCallData: state.apiCall
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null
+)(ListItems);

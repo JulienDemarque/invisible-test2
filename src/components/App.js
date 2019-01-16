@@ -4,6 +4,7 @@ import { callAPI } from "../actions";
 import "bulma/css/bulma.css";
 
 import "../App.css";
+import Header from "./Header";
 import ListItems from "./ListItems";
 
 class App extends Component {
@@ -15,6 +16,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Header />
         <ListItems />
       </div>
     );
@@ -23,7 +25,7 @@ class App extends Component {
 
 const mapDispatchToProps = dispatch => ({
   callAPI: () => {
-    dispatch(callAPI);
+    dispatch(callAPI());
   }
 });
 

@@ -1,6 +1,6 @@
 import { API_CALL } from "./types";
 
-export const callAPI = prop => async dispatch => {
+export const callAPI = props => async dispatch => {
   console.log("API called");
   var response = await fetch(
     "https://api.mercadolibre.com/sites/MLM/search?q=orange"
